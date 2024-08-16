@@ -178,12 +178,13 @@ SERVICE_STOP_PLANNED   =  0x40000000
 SERVICE_STOP_UNPLANNED =  0x10000000
 
 # SERVICE_TRIGGER triggers
-SERVICE_TRIGGER_TYPE_DEVICE_INTERFACE_ARRIVAL  = 0x00000001
-SERVICE_TRIGGER_TYPE_IP_ADDRESS_AVAILABILITY   = 0x00000002
-SERVICE_TRIGGER_TYPE_DOMAIN_JOIN               = 0x00000003
-SERVICE_TRIGGER_TYPE_FIREWALL_PORT_EVENT       = 0x00000004
-SERVICE_TRIGGER_TYPE_GROUP_POLICY              = 0x00000005
-SERVICE_TRIGGER_TYPE_CUSTOM                    = 0x00000020
+SERVICE_TRIGGER_TYPE_DEVICE_INTERFACE_ARRIVAL  = 1
+SERVICE_TRIGGER_TYPE_IP_ADDRESS_AVAILABILITY   = 2
+SERVICE_TRIGGER_TYPE_DOMAIN_JOIN               = 3
+SERVICE_TRIGGER_TYPE_FIREWALL_PORT_EVENT       = 4
+SERVICE_TRIGGER_TYPE_GROUP_POLICY              = 5
+SERVICE_TRIGGER_TYPE_NETWORK_ENDPOINT          = 6
+SERVICE_TRIGGER_TYPE_CUSTOM                    = 20
 
 # SERVICE_TRIGGER actions
 SERVICE_TRIGGER_ACTION_SERVICE_START = 0x00000001
@@ -685,7 +686,7 @@ class RSetServiceObjectSecurity(NDRCALL):
     structure = (
         ('hService',SC_RPC_HANDLE),
         ('dwSecurityInformation',SECURITY_INFORMATION),
-        ('lpSecurityDescriptor',LPBYTE),
+        ('lpSecurityDescriptor',BYTE_ARRAY),
         ('cbBufSize',DWORD),
     )
 
@@ -1202,6 +1203,7 @@ def hRSetServiceObjectSecurity(dce, hService, dwSecurityInformation, lpSecurityD
     request = RSetServiceObjectSecurity()
     request['hService'] = hService
     request['dwSecurityInformation'] = dwSecurityInformation
+    request['lpSecurityDescriptor'] = lpSecurityDescriptor
     request['cbBufSize'] = cbBufSize
     return dce.request(request)
 
